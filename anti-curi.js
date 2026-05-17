@@ -5,7 +5,7 @@
 // 1. ANTI KLIK KANAN: Mengunci menu klik kanan browser + Muncul Alert Gahar
 document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
-    alert('Eits! Dilarang mencuri kodingan ELTRI PROJECT! 😎🔥');
+    alert('Sistem keamanan Anti error Dilarang mencuri kodingan ELTRI PROJECT!');
 });
 
 // 2. ANTI BLOCK TEKS / SELECT: Orang gak bisa seret/blok teks buat di-copy
