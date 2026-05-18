@@ -13,7 +13,7 @@ face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fronta
 # 2. INISIALISASI RECOGNIZER LBPH (ANTI-EROR)
 recognizer = None
 MODE_KUNCI_AKTIF = False
-NAMA_FOTO_KUNCI = "face.png"
+NAMA_FOTO_KUNCI = "face.jpg"
 
 # Gunakan deteksi otomatis model yang tersedia di library OpenCV Anda
 try:
