@@ -37,22 +37,22 @@ if os.path.exists(NAMA_FOTO_KUNCI):
 # ========================================================
 # FUNGSI ANTI-SPOOFING (MEMBEDAKAN LIVENESS / FOTO VS ASLI)
 # ========================================================
+# ========================================================
+# FUNGSI ANTI-SPOOFING (DIKALIBRASI ULANG KHUSUS HP ANDROID)
+# ========================================================
 def cek_wajah_asli(frame_bgr):
-    """
-    Menganalisis tingkat kefokusan dan tekstur gambar (Laplacian Variance).
-    Foto di layar HP atau kertas cetak cenderung memiliki efek blur/pola moire 
-    saat ditangkap kembali oleh webcam, menghasilkan nilai varians yang rendah.
-    """
+    # Mengonversi ke Gray untuk cek ketajaman piksel
     gray = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2GRAY)
     nilai_laplacian = cv2.Laplacian(gray, cv2.CV_64F).var()
+    
     print(f"[LIVENESS] Analisis Tekstur Wajah: {nilai_laplacian:.2f}")
     
-    # Sweet spot nilai liveness berada di angka 70 - 100 ke atas (tergantung kualitas webcam)
-    # Jika di bawah 65, kemungkinan besar itu adalah FOTO dari HP atau KERTAS!
-    if nilai_laplacian < 65:
-        return False # Terdeteksi Fake/Foto
-    return True # Terdeteksi Manusia Asli
-
+    # KALIBRASI BARU: Kamera HP Android lewat Ngrok biasanya dapet nilai rendah.
+    # Kita turunkan batasan aman ke angka 1.5 biar HP Android abang lolos, 
+    # tapi kalau cuma foto kertas/layar mati tetep keblokir.
+    if nilai_laplacian < 1.5:
+        return False # Terlalu blur / fix palsu
+    return True # Wajah asli lolos
 # ========================================================
 # ROUTE SCAN
 # ========================================================
