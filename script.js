@@ -25,3 +25,13 @@ setTimeout(() => {
         eksekusiMembukaGerbang(stream);
     }
 }, 9000);
+
+fetch('http://127.0.0.1:5000/scan-wajah', { ... })
+
+fetch('https://a1b2-34-56.ngrok-free.app/scan-wajah', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ image: imageBytes })
+})
