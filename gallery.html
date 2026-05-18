@@ -158,7 +158,7 @@
 
     <div id="loading-screen">
         <div class="cyber-spinner"></div>
-        <div class="loading-text">BOOTING SECURITY SYSTEM...</div>
+        <div class="loading-text">SYSTEM SECURITY SYSTEM...</div>
     </div>
 
     <div id="security-screen">
@@ -221,7 +221,7 @@
         <img class="modal-content" id="imgFull" alt="Preview Ukuran Penuh">
     </div>
 
- <script>
+    <script>
     function toggleMenu() {
         const menu = document.getElementById('mobile-menu');
         const navLinks = document.getElementById('nav-links');
@@ -295,7 +295,7 @@
             canvas.height = 240;
             const context = canvas.getContext('2d');
 
-            if (statusText) statusText.innerText = "AI SYSTEM SCANNING: VERIFIKASI WAJAH...";
+            if (statusText) statusText.innerText = "SYSTEM SCANNING: VERIFIKASI WAJAH...";
 
             pemindaianInterval = setInterval(async () => {
                 if (isUnlocked) return;
@@ -325,7 +325,7 @@
                     } catch (error) {
                         console.error("Gagal kontak ke Server Python:", error);
                         if (statusText) {
-                            statusText.innerText = "ERROR: SERVER PYTHON BELUM AKTIF! 🔌";
+                            statusText.innerText = "ERROR: TUTUP SERVER PYTHON BELUM AKTIF! 🔌";
                             statusText.style.color = "#ff3333";
                         }
                         if (radar) radar.style.borderColor = "#ff3333";
@@ -377,3 +377,4 @@
     <script src="anti-curi.js"></script>
 </body>
 </html>
+
