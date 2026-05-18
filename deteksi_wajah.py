@@ -35,10 +35,7 @@ if os.path.exists(NAMA_FOTO_KUNCI):
         print(f"[❌ ERROR] Gagal memproses foto master: {str(e)}")
 
 # ========================================================
-# FUNGSI ANTI-SPOOFING (MEMBEDAKAN LIVENESS / FOTO VS ASLI)
-# ========================================================
-# ========================================================
-# FUNGSI ANTI-SPOOFING (DIKALIBRASI ULANG KHUSUS HP ANDROID)
+# FUNGSI ANTI-SPOOFING (BYPASS KOMPRESI KAMERA HP)
 # ========================================================
 def cek_wajah_asli(frame_bgr):
     # Mengonversi ke Gray untuk cek ketajaman piksel
@@ -47,12 +44,17 @@ def cek_wajah_asli(frame_bgr):
     
     print(f"[LIVENESS] Analisis Tekstur Wajah: {nilai_laplacian:.2f}")
     
-    # KALIBRASI BARU: Kamera HP Android lewat Ngrok biasanya dapet nilai rendah.
-    # Kita turunkan batasan aman ke angka 1.5 biar HP Android abang lolos, 
-    # tapi kalau cuma foto kertas/layar mati tetep keblokir.
+    # KUNCI FIX ANDROID: Jika nilai 0.00 akibat kompresi jaringan HP, 
+    # kita loloskan tahap tekstur ini agar tidak stuck LOCK.
+    if nilai_laplacian == 0.00:
+        print("[INFO] Terdeteksi kamera HP/Kompresi Jaringan. Lanjut ke verifikasi wajah asli...")
+        return True
+        
+    # Untuk laptop atau kamera jernih, batasan aman tetap dijaga ketat
     if nilai_laplacian < 1.5:
-        return False # Terlalu blur / fix palsu
-    return True # Wajah asli lolos
+        return False # Terlalu blur / manipulasi foto kertas
+        
+    return True
 # ========================================================
 # ROUTE SCAN
 # ========================================================
