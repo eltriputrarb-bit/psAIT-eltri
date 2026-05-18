@@ -221,7 +221,7 @@
         <img class="modal-content" id="imgFull" alt="Preview Ukuran Penuh">
     </div>
 
-   <script>
+ <script>
     function toggleMenu() {
         const menu = document.getElementById('mobile-menu');
         const navLinks = document.getElementById('nav-links');
@@ -238,7 +238,6 @@
         if (isUnlocked) return;
         isUnlocked = true;
 
-        // Hentikan pengiriman gambar ke server jika sudah sukses terbuka
         if (pemindaianInterval) clearInterval(pemindaianInterval);
 
         const statusText = document.getElementById('lock-status');
@@ -298,17 +297,15 @@
 
             if (statusText) statusText.innerText = "AI SYSTEM SCANNING: VERIFIKASI WAJAH...";
 
-            // Mengirim snapshot wajah ke Flask Server setiap 1.5 detik
             pemindaianInterval = setInterval(async () => {
                 if (isUnlocked) return;
 
                 if (video && context) {
                     context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    // Kompresi ke jpeg 0.7 (70%) agar payload base64 ringan di jaringan lokal
                     const base64Image = canvas.toDataURL('image/jpeg', 0.7); 
 
                     try {
-                        const response = await fetch('http://127.0.0.1:5000/scan-wajah', {
+                        const response = await fetch('http://192.168.100.5:5000/scan-wajah', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ image: base64Image })
@@ -355,7 +352,6 @@
         }, 1000);
     });
 
-    // ====== FITUR KEAMANAN PROTECTION DATA ======
     document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
     document.addEventListener('selectstart', function(e) { e.preventDefault(); });
     document.addEventListener('keydown', function(e) {
@@ -373,7 +369,6 @@
             modal.classList.add("show");
         }
     }
-    
     function closeModal() {
         const modal = document.getElementById("galleryModal");
         if (modal) modal.classList.remove("show");
