@@ -275,7 +275,7 @@
         const video = document.getElementById('scanner-webcam');
 
         if (statusText) {
-            statusText.innerText = "SISTEM LIVE: MENGHUBUNGKAN AI SERVER...";
+            statusText.innerText = "SISTEM LIVE: MENGHUBUNGKAN SERVER...";
             statusText.style.color = "#00a2ff";
         }
         if (radar) radar.style.borderColor = "#00a2ff";
@@ -295,7 +295,7 @@
             canvas.height = 240;
             const context = canvas.getContext('2d');
 
-            if (statusText) statusText.innerText = "SYSTEM SCANNING: VERIFIKASI WAJAH...";
+            if (statusText) statusText.innerText = "SERVER LOADING SYSTEM:VERIFIKASI WAJAH...";
 
             pemindaianInterval = setInterval(async () => {
                 if (isUnlocked) return;
