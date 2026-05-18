@@ -252,7 +252,6 @@
             setTimeout(() => {
                 securityScreen.classList.add('unlocked');
                 mainPortfolio.style.opacity = "1";
-                // Tampilkan video live ke lingkaran hero profile
                 const previewWebcam = document.getElementById('webcam');
                 if (previewWebcam && stream) {
                     previewWebcam.srcObject = stream;
@@ -284,28 +283,22 @@
                 tracking.track('#scanner-webcam', tracker);
 
                 tracker.on('track', function(event) {
+                    // GERBANG HANYA AKAN TERBUKA JIKA WAJAH TERDETEKSI NYATA SECARA LIVE
                     if (event.data.length > 0 && !isUnlocked) {
-                        // Wajah ditemukan! Langsung jebol kunci gerbang
                         eksekusiMembukaGerbang(stream);
                     }
                 });
 
-                // ANTI-STUCK SYSTEM (Jika 7 detik wajah kurang cahaya/tidak terbaca, otomatis tembus)
-                setTimeout(() => {
-                    if (!isUnlocked) {
-                        console.log("Anti-Stuck Aktif: Membuka Gerbang.");
-                        eksekusiMembukaGerbang(stream);
-                    }
-                }, 7000);
+                // === SEKSI ANTI-STUCK DIHAPUS BIAR TIDAK BYPASS OTOMATIS LAGI ===
 
             } catch (err) {
                 console.error("Akses kamera ditolak browser: ", err);
                 statusText.innerText = "AKSES KAMERA DIBLOKIR BROWSER!";
-                statusText.style.color = "#ff9900";
-                radar.style.borderColor = "#ff9900";
+                statusText.style.color = "#ff3333";
+                radar.style.borderColor = "#ff3333";
                 
-                // Fallback jika laptop tidak ada kamera/diblokir agar web tidak rusak
-                setTimeout(() => { eksekusiMembukaGerbang(null); }, 2000);
+                // SISTEM DIKUNCI TOTAL (HARD LOCK) JIKA KAMERA TIDAK DIIZINKAN USER
+                isUnlocked = false; 
             }
         }
 
@@ -314,7 +307,7 @@
             setTimeout(function() {
                 if (loadingScreen) loadingScreen.classList.add('fade-out');
                 mulaiPemindaianAI(); 
-            }, 1000); // Set booting 1 detik biar kilat
+            }, 1000);
         });
 
         // ====== FITUR KEAMANAN PROTECTION DATA ======
@@ -327,7 +320,6 @@
             }
         });
 
-        // Tambahan Fungsi Lightbox Modal Foto Galeri
         function openModal(imageSrc) {
             const modal = document.getElementById("galleryModal");
             const modalImg = document.getElementById("imgFull");
