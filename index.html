@@ -260,118 +260,164 @@
 
     </div>
 
-    <script>
-        function toggleMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const navLinks = document.getElementById('nav-links');
+   <script>
+    function toggleMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const navLinks = document.getElementById('nav-links');
+        if (menu && navLinks) {
             menu.classList.toggle('is-active');
             navLinks.classList.toggle('active');
         }
+    }
 
-        let isUnlocked = false;
+    let isUnlocked = false;
+    let pemindaianInterval = null;
 
-        function eksekusiMembukaGerbang(stream) {
-            if (isUnlocked) return;
-            isUnlocked = true;
+    function eksekusiMembukaGerbang(stream) {
+        if (isUnlocked) return;
+        isUnlocked = true;
 
-            const statusText = document.getElementById('lock-status');
-            const radar = document.getElementById('radar');
-            const lockEmoji = document.getElementById('lock-emoji');
-            const eltriTitle = document.getElementById('eltri-title');
-            const securityScreen = document.getElementById('security-screen');
-            const mainPortfolio = document.getElementById('main-portfolio');
+        // Hentikan pengiriman gambar ke server jika sudah sukses terbuka
+        if (pemindaianInterval) clearInterval(pemindaianInterval);
 
-            statusText.innerText = "ACCESS GRANTED! UNLOCKED 🔓";
+        const statusText = document.getElementById('lock-status');
+        const radar = document.getElementById('radar');
+        const lockEmoji = document.getElementById('lock-emoji');
+        const eltriTitle = document.getElementById('eltri-title');
+        const securityScreen = document.getElementById('security-screen');
+        const mainPortfolio = document.getElementById('main-portfolio');
+
+        if (statusText) {
+            statusText.innerText = "ACCESS GRANTED! WELCOME MASTER 🔓";
             statusText.style.color = "#33ff33";
+        }
+        if (radar) {
             radar.style.borderColor = "#33ff33";
             radar.style.borderStyle = "solid";
-            lockEmoji.innerText = "🔓";
-            if (eltriTitle) eltriTitle.style.display = "block";
-
-            setTimeout(() => {
-                securityScreen.classList.add('unlocked');
-                mainPortfolio.style.opacity = "1";
-                const previewWebcam = document.getElementById('webcam');
-                if (previewWebcam && stream) {
-                    previewWebcam.srcObject = stream;
-                }
-            }, 1200);
         }
+        if (lockEmoji) lockEmoji.innerText = "🔓";
+        if (eltriTitle) eltriTitle.style.display = "block";
 
-        async function mulaiPemindaianAI() {
-            const statusText = document.getElementById('lock-status');
-            const radar = document.getElementById('radar');
-            const video = document.getElementById('scanner-webcam');
+        setTimeout(() => {
+            if (securityScreen) securityScreen.classList.add('unlocked');
+            if (mainPortfolio) mainPortfolio.style.opacity = "1";
+            
+            const previewWebcam = document.getElementById('webcam');
+            if (previewWebcam && stream) {
+                previewWebcam.srcObject = stream;
+            }
+        }, 1200);
+    }
 
-            statusText.innerText = "SISTEM LIVE: PINDAI WAJAH MASTER...";
+    async function mulaiPemindaianAI() {
+        const statusText = document.getElementById('lock-status');
+        const radar = document.getElementById('radar');
+        const video = document.getElementById('scanner-webcam');
+
+        if (statusText) {
+            statusText.innerText = "SISTEM LIVE: MENGHUBUNGKAN AI SERVER...";
             statusText.style.color = "#00a2ff";
-            radar.style.borderColor = "#00a2ff";
+        }
+        if (radar) radar.style.borderColor = "#00a2ff";
 
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { width: 320, height: 240 } 
-                });
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { width: 320, height: 240 } 
+            });
+            
+            if (video) {
                 video.srcObject = stream;
+                video.play();
+            }
 
-                // Konfigurasi detektor wajah pelacak piksel live
-                const tracker = new tracking.ObjectTracker('face');
-                tracker.setInitialScale(4);
-                tracker.setStepSize(2);
-                tracker.setEdgesDensity(0.1);
+            const canvas = document.createElement('canvas');
+            canvas.width = 320;
+            canvas.height = 240;
+            const context = canvas.getContext('2d');
 
-                tracking.track('#scanner-webcam', tracker);
+            if (statusText) statusText.innerText = "AI SYSTEM SCANNING: VERIFIKASI WAJAH...";
 
-                tracker.on('track', function(event) {
-                    // GERBANG HANYA AKAN TERBUKA JIKA WAJAH TERDETEKSI NYATA SECARA LIVE
-                    if (event.data.length > 0 && !isUnlocked) {
-                        eksekusiMembukaGerbang(stream);
+            // Mengirim snapshot wajah ke Flask Server setiap 1.5 detik
+            pemindaianInterval = setInterval(async () => {
+                if (isUnlocked) return;
+
+                if (video && context) {
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    // Kompresi ke jpeg 0.7 (70%) agar payload base64 ringan di jaringan lokal
+                    const base64Image = canvas.toDataURL('image/jpeg', 0.7); 
+
+                    try {
+                        const response = await fetch('http://127.0.0.1:5000/scan-wajah', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ image: base64Image })
+                        });
+
+                        const result = await response.json();
+
+                        if (result.status === "UNLOCKED") {
+                            eksekusiMembukaGerbang(stream);
+                        } else {
+                            if (statusText) {
+                                statusText.innerText = "ACCESS DENIED: WAJAH TIDAK COCOK! 🔒";
+                                statusText.style.color = "#ffaa00";
+                            }
+                            if (radar) radar.style.borderColor = "#ffaa00";
+                        }
+                    } catch (error) {
+                        console.error("Gagal kontak ke Server Python:", error);
+                        if (statusText) {
+                            statusText.innerText = "ERROR: SERVER PYTHON BELUM AKTIF! 🔌";
+                            statusText.style.color = "#ff3333";
+                        }
+                        if (radar) radar.style.borderColor = "#ff3333";
                     }
-                });
+                }
+            }, 1500);
 
-                // === SEKSI ANTI-STUCK DIHAPUS BIAR TIDAK BYPASS OTOMATIS LAGI ===
-
-            } catch (err) {
-                console.error("Akses kamera ditolak browser: ", err);
+        } catch (err) {
+            console.error("Akses kamera ditolak browser: ", err);
+            if (statusText) {
                 statusText.innerText = "AKSES KAMERA DIBLOKIR BROWSER!";
                 statusText.style.color = "#ff3333";
-                radar.style.borderColor = "#ff3333";
-                
-                // SISTEM DIKUNCI TOTAL (HARD LOCK) JIKA KAMERA TIDAK DIIZINKAN USER
-                isUnlocked = false; 
             }
+            if (radar) radar.style.borderColor = "#ff3333";
+            isUnlocked = false; 
         }
+    }
 
-        window.addEventListener('load', function() {
-            const loadingScreen = document.getElementById('loading-screen');
-            setTimeout(function() {
-                if (loadingScreen) loadingScreen.classList.add('fade-out');
-                mulaiPemindaianAI(); 
-            }, 1000);
-        });
+    window.addEventListener('load', function() {
+        const loadingScreen = document.getElementById('loading-screen');
+        setTimeout(function() {
+            if (loadingScreen) loadingScreen.classList.add('fade-out');
+            mulaiPemindaianAI(); 
+        }, 1000);
+    });
 
-        // ====== FITUR KEAMANAN PROTECTION DATA ======
-        document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
-        document.addEventListener('selectstart', function(e) { e.preventDefault(); });
-        document.addEventListener('keydown', function(e) {
-            if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I") || (e.ctrlKey && e.key === "U")) {
-                e.preventDefault();
-                alert('Sistem Aman, Master Eltri! 🦾');
-            }
-        });
-
-        function openModal(imageSrc) {
-            const modal = document.getElementById("galleryModal");
-            const modalImg = document.getElementById("imgFull");
-            if(modal && modalImg) {
-                modalImg.src = imageSrc;
-                modal.classList.add("show");
-            }
+    // ====== FITUR KEAMANAN PROTECTION DATA ======
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+    document.addEventListener('selectstart', function(e) { e.preventDefault(); });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I") || (e.ctrlKey && e.key === "U")) {
+            e.preventDefault();
+            alert('Sistem Aman, Master Eltri! 🦾');
         }
-        function closeModal() {
-            const modal = document.getElementById("galleryModal");
-            if(modal) modal.classList.remove("show");
+    });
+
+    function openModal(imageSrc) {
+        const modal = document.getElementById("galleryModal");
+        const modalImg = document.getElementById("imgFull");
+        if (modal && modalImg) {
+            modalImg.src = imageSrc;
+            modal.classList.add("show");
         }
-    </script>
+    }
+    
+    function closeModal() {
+        const modal = document.getElementById("galleryModal");
+        if (modal) modal.classList.remove("show");
+    }
+</script>
     <script src="anti-curi.js"></script>
 </body>
 </html>
