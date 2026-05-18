@@ -6,92 +6,154 @@
     <title>ELTRI PROJECT</title>
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/png" href="logo.png">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:ital,wght=1,500;1,700&family=Yellowtail&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <!-- Link Font Montserrat agar teks keren -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="gallery.css">
-    <link rel="stylesheet" href="loading.css">
-    <link rel="stylesheet" href="camera.css">
 
-    </style>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/tracking-min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/data/face-min.js"></script>
 </head>
-<body>
+<body>    
+    <!-- NAVBAR (Support Laptop & Android) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <div id="main-portfolio">
+<nav class="container-navbar">
+        <div class="nav-left">
+            <a href="index.html" class="logo-link">
+                <img src="logo.png" class="logo" alt="Logo"> 
+                <span class="brand-text">ELTRI PROJECT</span>
+            </a>
+        </div>
+
+        <div class="nav-right">
+            <ul class="ul-navbar" id="nav-links">
+                <li><a href="index.html" class="menu-item-btn btn-gahar"><i class="fas fa-home"></i> HOME</a></li>
+                <li><a href="gallery.html" class="menu-item-btn btn-gahar"><i class="fas fa-images"></i> GALLERY</a></li>
+                <li><a href="Proyek.html" class="menu-item-btn btn-public btn-gahar"><i class="fas fa-user"></i> PUBLIC PROFILE</a></li>
+            </ul>
+            
+            <div class="menu-toggle" id="mobile-menu" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+</script>
+
+<style>
+    /* CSS UNTUK HP (ANDROID) */
+    @media screen and (max-width: 768px) {
+        /* Kita tembak class hero-content dan h1-nya */
+        .hero-content h1 {
+            font-size: 20px !important;    /* Ukuran font dipaksa kecil */
+            line-height: 1.2 !important;   /* Jarak baris rapat */
+            margin-top: 50px !important;   /* Jarak dari navbar */
+            width: 100% !important;
+            text-align: center !important;
+        }
         
-        <nav class="container-navbar">
-            <div class="nav-left">
-                <a href="index.html" class="logo-link">
-                    <img src="logo.png" class="logo" alt="Logo">    
-                    <span class="brand-text">ELTRI PROJECT</span>
-                </a>
-            </div>
-            <div class="nav-right">
-                <ul class="ul-navbar" id="nav-links">
-                    <li><a href="index.html" class="menu-item-btn btn-gahar"><i class="fas fa-home"></i> HOME</a></li>
-                    <li><a href="gallery.html" class="menu-item-btn btn-gahar"><i class="fas fa-images"></i> GALLERY</a></li>
-                    <li><a href="Proyek.html" class="menu-item-btn btn-public btn-gahar"><i class="fas fa-user"></i> PUBLIC PROFILE</a></li>
-                </ul>
-                <div class="menu-toggle" id="mobile-menu" onclick="toggleMenu()">
-                    <span></span><span></span><span></span>
-                </div>
-            </div>
-        </nav>
+        /* Tambahan biar teksnya gak nabrak pinggir layar */
+        .hero-content {
+            padding: 0 20px !important;
+        }
+    }
 
-        <section class="hero">
-            <div class="hero-content">
-                <h1 style="font-weight: 700; color: #fff;">ELTRI PUTRA ROMBEBUA</h1>
-            </div>
-        </section>
+    /* CSS UNTUK LAPTOP */
+    @media screen and (min-width: 769px) {
+        .hero-content h1 {
+            font-size: 60px !important;   /* Di laptop tetep raksasa */
+        }
+    }
+</style>
 
-         <section class="social-footer" style="text-align: center; padding: 40px 0; background: rgba(0,0,0,0.2);">
-            <h3 style="font-size: 1.1rem; letter-spacing: 2px; color: #f05209; margin-bottom: 20px;">PROJECT SOSIAL</h3>
-            <div class="social-icons" style="display: flex; justify-content: center; gap: 25px; align-items: center;">
-                <a href="https://www.instagram.com/eltriputra?igsh=cDE5ZXllNXB4dHNo" class="icon instagram" target="_blank" style="font-size: 2.5rem; color: #e1306c; transition: transform 0.3s;"><i class="fab fa-instagram"></i></a>
-                <a href="https://x.com/eltri_putra" class="icon x-logo" target="_blank" style="font-size: 2.3rem; color: #ffffff;">
-                    <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 34px; fill: currentColor; display: inline-block; vertical-align: middle;">
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-                    </svg>
-                </a>
-            </div>
-        </section>
-
-        <section class="profile-section" style="padding: 40px 0;">
-            <div class="container-flex" style="display: flex; align-items: center; justify-content: center; gap: 40px; max-width: 1100px; margin: 0 auto; padding: 0 20px;">
-                <div class="image-wrapper" style="position: relative;">
-                    <img src="Gereja Katolik Katedral St. Maria Diangkat Ke Surga.jpg" class="img-main" style="max-width: 100%; width: 400px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.7);">
-                    <div class="floating-logo" style="position: absolute; bottom: -15px; right: -15px; background: #0a0a12; padding: 10px; border-radius: 50%; box-shadow: 0 0 15px rgba(0,162,255,0.5);">
-                        <img src="logo.png" width="45">
-                    </div>
-                </div>
-
-                <div class="text-wrapper">
-                    <span class="label-eltri" style="background: #00a2ff; color: #fff; padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; letter-spacing: 1px;">ELTRI</span>
-                    <h2 class="name-title" style="margin-top: 15px; font-weight: 700;">ELTRI PUTRA ROMBEBUA</h2>
-                    <div class="visi-content" style="margin-top: 10px;">
-                        <p class="visi-text" style="font-family: 'Playfair Display', serif; font-style: italic; color: #00ffaa; font-size: 1.6rem;">"Tuhan Yang Maha Esa"</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
+<section class="hero">
+    <div class="hero-content">
+        <h1>ELTRI PUTRA ROMBEBUA</h1>
     </div>
+</section>
 
+<!-- SCRIPT MENU -->
     <script>
-    function toggleMenu() {
-        const menu = document.getElementById('mobile-menu');
-        const navLinks = document.getElementById('nav-links');
-        if (menu && navLinks) {
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const navLinks = document.getElementById('nav-links');
             menu.classList.toggle('is-active');
             navLinks.classList.toggle('active');
         }
-    }
-</script>
-    <script src="anti-curi.js"></script>
+    </script>
 </body>
-</html>
+
+
+<!-- Link untuk memanggil ikon Project sosial -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
+
+<section class="social-footer">
+    <h3>Project Sosial</h3>
+    <div class="social-icons">
+        <a href="https://www.instagram.com/eltriputra?igsh=cDE5ZXllNXB4dHNo" class="icon instagram" target="_blank">
+        <i class="fab fa-instagram"></i>
+    </a>
+    
+    <a href="https://x.com/eltri_putra" class="icon x-logo" target="_blank">
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="svg-x">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+        </svg>
+    </a>
+</div>
+</section>
+
+<section class="profile-section">
+    <div class="container-flex">
+        <div class="image-wrapper">
+            <!-- Foto Utama -->
+            <img src="Gereja Katolik Katedral St. Maria Diangkat Ke Surga.jpg" class="img-main">
+            
+            <!-- Logo Hijau Melayang -->
+            <div class="floating-logo">
+                <img src="logo.png">
+            </div>
+        </div>
+
+       <div class="text-wrapper">
+            <span class="label-eltri">ELTRI</span>
+            <h2 class="name-title">ELTRI PUTRA ROMBEBUA</h2>
+            <div class="visi-content">
+                <p class="visi-text">"Tuhan Yang Maha Esa"</p>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:ital,wght@1,500;1,700&display=swap" rel="stylesheet">
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // 1. ANTI KLIK KANAN: Orang gak bisa klik kanan di web Abang
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        alert('Sistem keamanan Anti error Dilarang mencuri kodingan ELTRI PROJECT!');
+    });
+
+    // 2. ANTI BLOCK TEKS / SELECT: Orang gak bisa nge-blok tulisan buat di-copy
+    document.addEventListener('selectstart', function(e) {
+        e.preventDefault();
+    });
+
+    // 3. LOCK F12 / INSPECT: Mematikan shortcut keyboard buat buka DevTools
+    document.addEventListener('keydown', function(e) {
+        if (e.key === "F12" || 
+            (e.ctrlKey && e.shiftKey && e.key === "I") || 
+            (e.ctrlKey && e.shiftKey && e.key === "C") || 
+            (e.ctrlKey && e.key === "U")) {
+            e.preventDefault();
+            alert('Fitur Inspect Element Dikunci, Bang! 🦾');
+        }
+    });
+</script>
+
+<script src="anti-curi.js"></script>
+</body>
