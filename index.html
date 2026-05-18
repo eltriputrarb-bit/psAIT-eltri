@@ -6,73 +6,260 @@
     <title>ELTRI PROJECT</title>
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/png" href="logo.png">
-    <!-- Link Font Montserrat agar teks keren -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:ital,wght=1,500;1,700&family=Yellowtail&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="gallery.css">
+    <link rel="stylesheet" href="loading.css">
+    <link rel="stylesheet" href="camera.css">
 
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: #0a0a12;
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* 1. LAYER LOADING SYSTEM */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #05050a;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease;
+        }
+
+        #loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .cyber-spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid #1a1a3a;
+            border-top: 4px solid #00a2ff;
+            border-bottom: 4px solid #00a2ff;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            color: #00a2ff;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* 2. LAYER GERBANG LOCK SCREEN */
+        #security-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a12;
+            z-index: 8888;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease;
+        }
+
+        #security-screen.unlocked {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .security-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 162, 255, 0.2);
+            box-shadow: 0 0 30px rgba(0, 162, 255, 0.1);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .lock-icon-box {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .radar-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px dashed #ff9900;
+            border-radius: 50%;
+            animation: spin 10s linear infinite;
+            transition: border-color 0.5s ease;
+        }
+
+        .lock-status-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #ff9900;
+            margin-top: 20px;
+            text-transform: uppercase;
+            transition: color 0.5s ease;
+        }
+
+        /* Kamera Scanner Latar Belakang (Murni JS) */
+        #scanner-webcam {
+            position: absolute;
+            width: 320px;
+            height: 240px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* 3. LAYER KONTEN UTAMA PORTFOLIO ELTRI */
+        #main-portfolio {
+            opacity: 0;
+            transition: opacity 1.5s ease;
+            padding-top: 80px;
+        }
+
+        /* Responsive Layout Konten */
+        @media screen and (max-width: 768px) {
+            .hero-content h1, .name-title {
+                font-size: 22px !important;
+                line-height: 1.2 !important;
+                text-align: center !important;
+            }
+            .container-flex {
+                flex-direction: column !important;
+                text-align: center;
+            }
+        }
+
+        @media screen and (min-width: 769px) {
+            .hero-content h1, .name-title {
+                font-size: 55px !important;
+            }
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/tracking-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/data/face-min.js"></script>
 </head>
-<body>    
-    <!-- NAVBAR (Support Laptop & Android) -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<body>
 
-<nav class="container-navbar">
-        <div class="nav-left">
-            <a href="index.html" class="logo-link">
-                <img src="logo.png" class="logo" alt="Logo"> 
-                <span class="brand-text">ELTRI PROJECT</span>
-            </a>
-        </div>
+    <video id="scanner-webcam" preload autoplay loop muted></video>
 
-        <div class="nav-right">
-            <ul class="ul-navbar" id="nav-links">
-                <li><a href="index.html" class="menu-item-btn btn-gahar"><i class="fas fa-home"></i> HOME</a></li>
-                <li><a href="gallery.html" class="menu-item-btn btn-gahar"><i class="fas fa-images"></i> GALLERY</a></li>
-                <li><a href="Proyek.html" class="menu-item-btn btn-public btn-gahar"><i class="fas fa-user"></i> PUBLIC PROFILE</a></li>
-            </ul>
-            
-            <div class="menu-toggle" id="mobile-menu" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    </nav>
-</script>
-
-<style>
-    /* CSS UNTUK HP (ANDROID) */
-    @media screen and (max-width: 768px) {
-        /* Kita tembak class hero-content dan h1-nya */
-        .hero-content h1 {
-            font-size: 20px !important;    /* Ukuran font dipaksa kecil */
-            line-height: 1.2 !important;   /* Jarak baris rapat */
-            margin-top: 50px !important;   /* Jarak dari navbar */
-            width: 100% !important;
-            text-align: center !important;
-        }
-        
-        /* Tambahan biar teksnya gak nabrak pinggir layar */
-        .hero-content {
-            padding: 0 20px !important;
-        }
-    }
-
-    /* CSS UNTUK LAPTOP */
-    @media screen and (min-width: 769px) {
-        .hero-content h1 {
-            font-size: 60px !important;   /* Di laptop tetep raksasa */
-        }
-    }
-</style>
-
-<section class="hero">
-    <div class="hero-content">
-        <h1>ELTRI PUTRA ROMBEBUA</h1>
+    <div id="loading-screen">
+        <div class="cyber-spinner"></div>
+        <div class="loading-text">BOOTING SECURITY SYSTEM...</div>
     </div>
-</section>
 
-<!-- SCRIPT MENU -->
+    <div id="security-screen">
+        <div class="security-container">
+            <h2 style="margin-bottom: 10px; letter-spacing: 2px;">MAIN PORTAL</h2>
+            <p style="color: #888; font-size: 0.9rem; margin-bottom: 30px;">BIOMETRIC RECOGNITION REQUIRED</p>
+
+            <div class="lock-icon-box">
+                <div id="radar" class="radar-circle"></div>
+                <span id="lock-emoji" style="font-size: 4rem;">🔒</span>
+            </div>
+
+            <div id="lock-status" class="lock-status-text">MENGHUBUNGKAN KE SENSOR...</div>
+            <h1 id="eltri-title" style="display: none; font-size: 1.8rem; color: #33ff33; margin-top: 15px;">WELCOME, MASTER ELTRI!</h1>
+        </div>
+    </div>
+
+    <div id="main-portfolio">
+        
+        <nav class="container-navbar">
+            <div class="nav-left">
+                <a href="index.html" class="logo-link">
+                    <img src="logo.png" class="logo" alt="Logo">    
+                    <span class="brand-text">ELTRI PROJECT</span>
+                </a>
+            </div>
+            <div class="nav-right">
+                <ul class="ul-navbar" id="nav-links">
+                    <li><a href="index.html" class="menu-item-btn btn-gahar"><i class="fas fa-home"></i> HOME</a></li>
+                    <li><a href="gallery.html" class="menu-item-btn btn-gahar"><i class="fas fa-images"></i> GALLERY</a></li>
+                    <li><a href="Proyek.html" class="menu-item-btn btn-public btn-gahar"><i class="fas fa-user"></i> PUBLIC PROFILE</a></li>
+                </ul>
+                <div class="menu-toggle" id="mobile-menu" onclick="toggleMenu()">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div class="hero-content">
+                <div class="camera-container" style="margin-bottom: 15px;">
+                    <video id="webcam" autoplay playsinline muted width="180" height="180" style="border-radius: 50%; border: 3px solid #33ff33; object-fit: cover; background: #000;"></video>
+                    <div id="camera-overlay"><i class="fas fa-unlock" style="color: #33ff33;"></i></div>
+                </div>
+                <h1 style="font-weight: 700; color: #fff;">ELTRI PUTRA ROMBEBUA</h1>
+            </div>
+        </section>
+
+         <section class="social-footer" style="text-align: center; padding: 40px 0; background: rgba(0,0,0,0.2);">
+            <h3 style="font-size: 1.1rem; letter-spacing: 2px; color: #888; margin-bottom: 20px;">PROJECT SOSIAL</h3>
+            <div class="social-icons" style="display: flex; justify-content: center; gap: 25px; align-items: center;">
+                <a href="https://www.instagram.com/eltriputra?igsh=cDE5ZXllNXB4dHNo" class="icon instagram" target="_blank" style="font-size: 2.5rem; color: #e1306c; transition: transform 0.3s;"><i class="fab fa-instagram"></i></a>
+                <a href="https://x.com/eltri_putra" class="icon x-logo" target="_blank" style="font-size: 2.3rem; color: #ffffff;">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" style="width: 34px; fill: currentColor; display: inline-block; vertical-align: middle;">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                    </svg>
+                </a>
+            </div>
+        </section>
+
+        <section class="profile-section" style="padding: 40px 0;">
+            <div class="container-flex" style="display: flex; align-items: center; justify-content: center; gap: 40px; max-width: 1100px; margin: 0 auto; padding: 0 20px;">
+                <div class="image-wrapper" style="position: relative;">
+                    <img src="Gereja Katolik Katedral St. Maria Diangkat Ke Surga.jpg" class="img-main" style="max-width: 100%; width: 400px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.7);">
+                    <div class="floating-logo" style="position: absolute; bottom: -15px; right: -15px; background: #0a0a12; padding: 10px; border-radius: 50%; box-shadow: 0 0 15px rgba(0,162,255,0.5);">
+                        <img src="logo.png" width="45">
+                    </div>
+                </div>
+
+                <div class="text-wrapper">
+                    <span class="label-eltri" style="background: #00a2ff; color: #fff; padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; letter-spacing: 1px;">ELTRI</span>
+                    <h2 class="name-title" style="margin-top: 15px; font-weight: 700;">ELTRI PUTRA ROMBEBUA</h2>
+                    <div class="visi-content" style="margin-top: 10px;">
+                        <p class="visi-text" style="font-family: 'Playfair Display', serif; font-style: italic; color: #00ffaa; font-size: 1.6rem;">"Tuhan Yang Maha Esa"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
     <script>
         function toggleMenu() {
             const menu = document.getElementById('mobile-menu');
@@ -80,80 +267,105 @@
             menu.classList.toggle('is-active');
             navLinks.classList.toggle('active');
         }
-    </script>
-</body>
 
+        let isUnlocked = false;
 
-<!-- Link untuk memanggil ikon Project sosial -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        function eksekusiMembukaGerbang(stream) {
+            if (isUnlocked) return;
+            isUnlocked = true;
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
+            const statusText = document.getElementById('lock-status');
+            const radar = document.getElementById('radar');
+            const lockEmoji = document.getElementById('lock-emoji');
+            const eltriTitle = document.getElementById('eltri-title');
+            const securityScreen = document.getElementById('security-screen');
+            const mainPortfolio = document.getElementById('main-portfolio');
 
-<section class="social-footer">
-    <h3>Project Sosial</h3>
-    <div class="social-icons">
-        <a href="https://www.instagram.com/eltriputra?igsh=cDE5ZXllNXB4dHNo" class="icon instagram" target="_blank">
-        <i class="fab fa-instagram"></i>
-    </a>
-    
-    <a href="https://x.com/eltri_putra" class="icon x-logo" target="_blank">
-        <svg viewBox="0 0 24 24" aria-hidden="true" class="svg-x">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-        </svg>
-    </a>
-</div>
-</section>
+            statusText.innerText = "ACCESS GRANTED! UNLOCKED 🔓";
+            statusText.style.color = "#33ff33";
+            radar.style.borderColor = "#33ff33";
+            radar.style.borderStyle = "solid";
+            lockEmoji.innerText = "🔓";
+            if (eltriTitle) eltriTitle.style.display = "block";
 
-<section class="profile-section">
-    <div class="container-flex">
-        <div class="image-wrapper">
-            <!-- Foto Utama -->
-            <img src="Gereja Katolik Katedral St. Maria Diangkat Ke Surga.jpg" class="img-main">
-            
-            <!-- Logo Hijau Melayang -->
-            <div class="floating-logo">
-                <img src="logo.png">
-            </div>
-        </div>
-
-       <div class="text-wrapper">
-            <span class="label-eltri">ELTRI</span>
-            <h2 class="name-title">ELTRI PUTRA ROMBEBUA</h2>
-            <div class="visi-content">
-                <p class="visi-text">"Tuhan Yang Maha Esa"</p>
-                <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:ital,wght@1,500;1,700&display=swap" rel="stylesheet">
-            </div>
-        </div>
-    </div>
-</section>
-
-<script>
-    // 1. ANTI KLIK KANAN: Orang gak bisa klik kanan di web Abang
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        alert('Sistem keamanan Anti error Dilarang mencuri kodingan ELTRI PROJECT!');
-    });
-
-    // 2. ANTI BLOCK TEKS / SELECT: Orang gak bisa nge-blok tulisan buat di-copy
-    document.addEventListener('selectstart', function(e) {
-        e.preventDefault();
-    });
-
-    // 3. LOCK F12 / INSPECT: Mematikan shortcut keyboard buat buka DevTools
-    document.addEventListener('keydown', function(e) {
-        if (e.key === "F12" || 
-            (e.ctrlKey && e.shiftKey && e.key === "I") || 
-            (e.ctrlKey && e.shiftKey && e.key === "C") || 
-            (e.ctrlKey && e.key === "U")) {
-            e.preventDefault();
-            alert('Fitur Inspect Element Dikunci, Bang! 🦾');
+            setTimeout(() => {
+                securityScreen.classList.add('unlocked');
+                mainPortfolio.style.opacity = "1";
+                // Tampilkan video live ke lingkaran hero profile
+                const previewWebcam = document.getElementById('webcam');
+                if (previewWebcam && stream) {
+                    previewWebcam.srcObject = stream;
+                }
+            }, 1200);
         }
-    });
-</script>
 
-<script src="anti-curi.js"></script>
+        async function mulaiPemindaianAI() {
+            const statusText = document.getElementById('lock-status');
+            const radar = document.getElementById('radar');
+            const video = document.getElementById('scanner-webcam');
+
+            statusText.innerText = "SISTEM LIVE: PINDAI WAJAH MASTER...";
+            statusText.style.color = "#00a2ff";
+            radar.style.borderColor = "#00a2ff";
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: 320, height: 240 } 
+                });
+                video.srcObject = stream;
+
+                // Konfigurasi detektor wajah pelacak piksel live
+                const tracker = new tracking.ObjectTracker('face');
+                tracker.setInitialScale(4);
+                tracker.setStepSize(2);
+                tracker.setEdgesDensity(0.1);
+
+                tracking.track('#scanner-webcam', tracker);
+
+                tracker.on('track', function(event) {
+                    if (event.data.length > 0 && !isUnlocked) {
+                        // Wajah ditemukan! Langsung jebol kunci gerbang
+                        eksekusiMembukaGerbang(stream);
+                    }
+                });
+
+                // ANTI-STUCK SYSTEM (Jika 7 detik wajah kurang cahaya/tidak terbaca, otomatis tembus)
+                setTimeout(() => {
+                    if (!isUnlocked) {
+                        console.log("Anti-Stuck Aktif: Membuka Gerbang.");
+                        eksekusiMembukaGerbang(stream);
+                    }
+                }, 7000);
+
+            } catch (err) {
+                console.error("Akses kamera ditolak browser: ", err);
+                statusText.innerText = "AKSES KAMERA DIBLOKIR BROWSER!";
+                statusText.style.color = "#ff9900";
+                radar.style.borderColor = "#ff9900";
+                
+                // Fallback jika laptop tidak ada kamera/diblokir agar web tidak rusak
+                setTimeout(() => { eksekusiMembukaGerbang(null); }, 2000);
+            }
+        }
+
+        window.addEventListener('load', function() {
+            const loadingScreen = document.getElementById('loading-screen');
+            setTimeout(function() {
+                if (loadingScreen) loadingScreen.classList.add('fade-out');
+                mulaiPemindaianAI(); 
+            }, 1000); // Set booting 1 detik biar kilat
+        });
+
+        // ====== FITUR KEAMANAN PROTECTION DATA ======
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+        document.addEventListener('selectstart', function(e) { e.preventDefault(); });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I") || (e.ctrlKey && e.key === "U")) {
+                e.preventDefault();
+                alert('Sistem Aman, Master Eltri! 🦾');
+            }
+        });
+    </script>
+    <script src="anti-curi.js"></script>
 </body>
+</html>
