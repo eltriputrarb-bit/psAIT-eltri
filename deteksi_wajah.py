@@ -1,83 +1,112 @@
-from flask import Flask, jsonify
+import face_recognition
+print("======================================================")
+print("[AI VERIFICATION] ANTI-SPOOFING & ANTI-TEMAN ACTIVE! 🔥")
+print("======================================================")
+
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import cv2
 import numpy as np
+import base64
 import os
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 
-# 1. MEMUAT DETEKTOR INTI WAJAH (HAAR CASCADE)
-face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-
-# 2. INISIALISASI RECOGNIZER LBPH (ANTI-EROR)
-recognizer = None
-MODE_KUNCI_AKTIF = False
 NAMA_FOTO_KUNCI = "face.jpg"
+KUNCI_WAJAH_MASTER = None
 
-# Gunakan deteksi otomatis model yang tersedia di library OpenCV Anda
-try:
-    if hasattr(cv2, 'face') and hasattr(cv2.face, 'LBPHFaceRecognizer_create'):
-        recognizer = cv2.face.LBPHFaceRecognizer_create()
-    elif hasattr(cv2, 'LBPHFaceRecognizer_create'):
-        recognizer = cv2.LBPHFaceRecognizer_create()
-except Exception:
-    recognizer = None
-
-# 3. VERIFIKASI FILE FOTO UTAMA (face.png)
-if recognizer is None:
-    print("\n[⚠️ INFO SYSTEM] Berjalan dalam 'Mode Deteksi Wajah Umum' (Asal ada manusia = Unlocked).")
-else:
-    if os.path.exists(NAMA_FOTO_KUNCI):
-        print(f"\n[AI SYSTEM] Menemukan file {NAMA_FOTO_KUNCI}. Memproses data wajah Master Eltri...")
-        foto_mentah = cv2.imread(NAMA_FOTO_KUNCI, cv2.IMREAD_GRAYSCALE)
-        wajah_terdeteksi = face_cascade.detectMultiScale(foto_mentah, 1.3, 5)
-
-        if len(wajah_terdeteksi) == 0:
-            print("[⚠️ WARN] AI tidak menemukan wajah di face.png. Pastikan foto terang dan jelas!")
+if os.path.exists(NAMA_FOTO_KUNCI):
+    try:
+        print(f"\n[AI SYSTEM] Menemukan {NAMA_FOTO_KUNCI}. Mengekstrak Biometrik Master...")
+        bgr_img = cv2.imread(NAMA_FOTO_KUNCI)
+        if bgr_img is None:
+            raise FileNotFoundError(f"File '{NAMA_FOTO_KUNCI}' rusak.")
+            
+        foto_master = cv2.cvtColor(bgr_img, cv2.COLOR_BGR2RGB).astype('uint8')
+        encoding_master = face_recognition.face_encodings(foto_master)
+        
+        if len(encoding_master) > 0:
+            KUNCI_WAJAH_MASTER = encoding_master[0]
+            print("[AI SYSTEM] Database Kunci Biometrik Sukses Diaktifkan! 🔒 LOCK ON!")
         else:
-            (x, y, w, h) = wajah_terdeteksi[0]
-            wajah_crop_kunci = foto_mentah[y:y+h, x:x+w]
-            recognizer.train([wajah_crop_kunci], np.array([1]))
-            print("[AI SYSTEM] Database Kunci Wajah Sukses Diaktifkan! 🔒")
-            MODE_KUNCI_AKTIF = True
-    else:
-        print(f"\n[⚠️ INFO] File '{NAMA_FOTO_KUNCI}' tidak ditemukan di folder. Menggunakan Mode Umum.")
+            print(f"[⚠️ WARN] AI tidak menemukan wajah di {NAMA_FOTO_KUNCI}!")
+    except Exception as e:
+        print(f"[❌ ERROR] Gagal memproses foto master: {str(e)}")
 
-# 4. AKTIFKAN HARDWARE WEBCAM
-kamera = cv2.VideoCapture(0)
+# ========================================================
+# FUNGSI ANTI-SPOOFING (MEMBEDAKAN LIVENESS / FOTO VS ASLI)
+# ========================================================
+def cek_wajah_asli(frame_bgr):
+    """
+    Menganalisis tingkat kefokusan dan tekstur gambar (Laplacian Variance).
+    Foto di layar HP atau kertas cetak cenderung memiliki efek blur/pola moire 
+    saat ditangkap kembali oleh webcam, menghasilkan nilai varians yang rendah.
+    """
+    gray = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2GRAY)
+    nilai_laplacian = cv2.Laplacian(gray, cv2.CV_64F).var()
+    print(f"[LIVENESS] Analisis Tekstur Wajah: {nilai_laplacian:.2f}")
+    
+    # Sweet spot nilai liveness berada di angka 70 - 100 ke atas (tergantung kualitas webcam)
+    # Jika di bawah 65, kemungkinan besar itu adalah FOTO dari HP atau KERTAS!
+    if nilai_laplacian < 65:
+        return False # Terdeteksi Fake/Foto
+    return True # Terdeteksi Manusia Asli
 
-@app.route('/scan-wajah', methods=['GET'])
+# ========================================================
+# ROUTE SCAN
+# ========================================================
+@app.route('/scan-wajah', methods=['POST', 'OPTIONS'])
 def scan_wajah():
-    ret, frame = kamera.read()
-    if not ret:
-        return jsonify({"status": "LOCKED"})
+    if request.method == 'OPTIONS':
+        return jsonify({"status": "OK"}), 200
 
-    gray_live = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces_live = face_cascade.detectMultiScale(gray_live, 1.3, 5)
+    if KUNCI_WAJAH_MASTER is None:
+        return jsonify({"status": "LOCKED", "reason": "Kunci wajah belum aktif"})
 
-    # Logika 1: Jika mode kunci tidak aktif, asal ada wajah manusia langsung terbuka
-    if not MODE_KUNCI_AKTIF:
-        if len(faces_live) > 0:
-            return jsonify({"status": "UNLOCKED"})
-        return jsonify({"status": "LOCKED"})
+    try:
+        data = request.get_json()
+        if not data or 'image' not in data:
+            return jsonify({"status": "LOCKED", "reason": "Data gambar kosong"})
 
-    # Logika 2: Jika face.png aktif, cocokkan tingkat kemiripan piksel wajah
-    for (x, y, w, h) in faces_live:
-        wajah_live_crop = gray_live[y:y+h, x:x+w]
-        try:
-            label, confidence = recognizer.predict(wajah_live_crop)
-            # Nilai confidence semakin kecil berarti semakin mirip dengan face.png
-            if label == 1 and confidence < 75.0:
+        encoded_data = data['image'].split(',')[1]
+        nparr = np.frombuffer(base64.b64decode(encoded_data), np.uint8)
+        frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        
+        if frame is None:
+            return jsonify({"status": "LOCKED", "reason": "Gagal membaca frame"})
+            
+        # 1. VALIDASI ANTI-FOTO (Liveness Detection)
+        if not cek_wajah_asli(frame):
+            print("[⚠️ ALARM] DETEKSI FRAUD: Teman Lu Nyoba Pakai Foto/HP! AKSES BLOKIR! ❌")
+            return jsonify({"status": "LOCKED", "reason": "Fake Image Detected"})
+
+        # 2. PROSES PENCOCOKAN WAJAH
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB).astype('uint8')
+        lokasi_wajah_live = face_recognition.face_locations(rgb_frame)
+        encodings_wajah_live = face_recognition.face_encodings(rgb_frame, lokasi_wajah_live)
+
+        for wajah_live in encodings_wajah_live:
+            # OPTIMASI ANTI-TEMAN: Tolerance diperketat dari 0.55 jadi 0.48! 
+            # Makin kecil angkanya, makin sadis AI-nya membedakan kemiripan wajah orang lain.
+            hasil_cocok = face_recognition.compare_faces([KUNCI_WAJAH_MASTER], wajah_live, tolerance=0.48)
+            jarak_kemiripan = face_recognition.face_distance([KUNCI_WAJAH_MASTER], wajah_live)[0]
+            
+            print(f"[SCANNING] Jarak Ketidakmiripan AI: {jarak_kemiripan:.4f}")
+
+            if hasil_cocok[0]:
+                print("[SUCCESS] MATCH! Selamat Datang Master Eltri! 🔓 ACCESS GRANTED.")
                 return jsonify({"status": "UNLOCKED"})
-        except Exception:
-            # Fallback jika terjadi kendala matriks di tengah jalan
-            return jsonify({"status": "UNLOCKED"})
 
-    return jsonify({"status": "LOCKED"})
+        print("[LOCKED] Anda Bukan Master Eltri! PORTAL TETAP DIKUNCI! 🔒")
+        return jsonify({"status": "LOCKED"})
+
+    except Exception as e:
+        print(f"[❌ ERROR] Kendala teknis: {str(e)}")
+        return jsonify({"status": "LOCKED", "error": str(e)})
 
 if __name__ == '__main__':
     print("\n==================================================================")
-    print("--- SERVER INTELLIGENCE BACK-END ELTRI PROJECT RUNNING ON PORT 5000 ---")
+    print("--- SERVER INTELLIGENCE ANTI-SPOOFING PORT 5000 ACTIVE ---")
     print("==================================================================")
     app.run(host='127.0.0.1', port=5000, debug=False)
