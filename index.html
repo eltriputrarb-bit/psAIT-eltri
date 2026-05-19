@@ -6,7 +6,6 @@
     <title>ELTRI PROJECT</title>
     <meta name="theme-color" content="#000000">
     <link rel="icon" type="image/png" href="logo.png">
-    <!-- Link Font Montserrat agar teks keren -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="gallery.css">
@@ -41,27 +40,27 @@
 </script>
 
 <style>
-    /* CSS UNTUK HP (ANDROID) */
+
     @media screen and (max-width: 768px) {
-        /* Kita tembak class hero-content dan h1-nya */
+
         .hero-content h1 {
-            font-size: 20px !important;    /* Ukuran font dipaksa kecil */
-            line-height: 1.2 !important;   /* Jarak baris rapat */
-            margin-top: 50px !important;   /* Jarak dari navbar */
+            font-size: 20px !important;    
+            line-height: 1.2 !important;   
+            margin-top: 50px !important;   
             width: 100% !important;
             text-align: center !important;
         }
         
-        /* Tambahan biar teksnya gak nabrak pinggir layar */
+        
         .hero-content {
             padding: 0 20px !important;
         }
     }
 
-    /* CSS UNTUK LAPTOP */
+   
     @media screen and (min-width: 769px) {
         .hero-content h1 {
-            font-size: 60px !important;   /* Di laptop tetep raksasa */
+            font-size: 60px !important;   
         }
     }
 </style>
@@ -84,7 +83,7 @@
 </body>
 
 
-<!-- Link untuk memanggil ikon Project sosial -->
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -109,10 +108,10 @@
 <section class="profile-section">
     <div class="container-flex">
         <div class="image-wrapper">
-            <!-- Foto Utama -->
+            
             <img src="Gereja Katolik Katedral St. Maria Diangkat Ke Surga.jpg" class="img-main">
             
-            <!-- Logo Hijau Melayang -->
+            
             <div class="floating-logo">
                 <img src="logo.png">
             </div>
@@ -132,45 +131,41 @@
 </section>
 
 <script>
-// 1. BLOKIR KLIK KANAN (Anti View-Source lewat Klik Kanan)
+
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
             alert("❌ PROTOKOL KEAMANAN: Hak Akses Hanya Untuk Master Eltri!");
         });
 
-        // 2. BLOKIR TOMBOL SHORTCUT (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
         document.addEventListener('keydown', function(e) {
-            // Blokir F12 (Inspect Element)
+        
             if (e.keyCode === 123) {
                 e.preventDefault();
                 return false;
             }
-            // Blokir Ctrl+Shift+I (Inspect) atau Ctrl+Shift+J (Console)
+            
             if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) {
                 e.preventDefault();
                 return false;
             }
-            // Blokir Ctrl+U (View Source)
+            
             if (e.ctrlKey && e.keyCode === 85) {
                 e.preventDefault();
                 return false;
             }
         });
 
-        // 3. JIKA TEMEN LU NEKAT BUKA DEVTOOLS LEWAT MENU BROWSER -> LEMPAR KE GOOGLE!
-        // Script ini mendeteksi selisih lebar layar jika DevTools terbuka
         setInterval(function() {
             const threshold = 160;
             const widthThreshold = window.outerWidth - window.innerWidth > threshold;
             const heightThreshold = window.outerHeight - window.innerHeight > threshold;
             
             if (widthThreshold || heightThreshold) {
-                // Jika terdeteksi inspect element terbuka, langsung tendang ke google
+                
                 window.location.href = "https://www.google.com";
             }
         }, 1000);
 
-        // Pesan rahasia hacker di console log
         console.log("%c[ELTRI SECURE SYSTEM] Stop memata-matai kode ini!", "color: red; font-size: 24px; font-weight: bold;");
 </script>
 <script src="obfuscated.js"></script>
