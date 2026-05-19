@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <!-- WAJIB: Meta tag ini supaya tampilan di Android nggak hancur -->
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Public Profile - Eltri Project</title>
     <link rel="icon" type="image/png" href="logo.png">
@@ -49,15 +49,15 @@
     </script>
 </body>
     
-<!-- Hero Section Baru -->
+
 <div class="hero-about">
     <section class="public-profile">
         <div class="profile-container">
         
-        <!-- KOLOM KIRI (SIDEBAR) -->
+        
         <div class="side-bar">
             <div class="photo-frame">
-                <!-- Ganti dengan nama file foto Abang -->
+                
                 <img src="profile.jpg" alt="Eltri Putra"> 
             </div>
             
@@ -75,7 +75,7 @@
             </div>
         </div>
 
-        <!-- KOLOM KANAN (MAIN CONTENT) -->
+        
         <div class="main-content">
             <h1 class="profile-name">ELTRI PUTRA ROMBEBUA</h1>
             <hr class="line-gold">
@@ -105,15 +105,12 @@
     </div>
 </section>
 
-<!-- Tutup dulu semua DIV Hero dan Section -->
-    </div> <!-- Tutup profile-container -->
-  </section> <!-- Tutup public-profile -->
-</div> <!-- Tutup hero-about -->
+    </div> 
+  </section> 
+</div> 
 
-<!-- BARU TARUH FOOTER DI SINI (Di luar Hero) -->
 <footer class="main-footer">
     &copy; 2026 ELTRI PROJECT</footer>
-<!-- Spacer supaya di HP bisa di-scroll sampe paling bawah -->
  
 <div style="height: 50px; background: #f4f4f4;"></div>
 
@@ -121,18 +118,15 @@
 </html>
 
 <script>
-    // 1. ANTI KLIK KANAN: Orang gak bisa klik kanan di web Abang
     document.addEventListener('contextmenu', function(e) {
         e.preventDefault();
         alert('Sistem keamanan Anti error Dilarang mencuri kodingan ELTRI PROJECT!');
     });
 
-    // 2. ANTI BLOCK TEKS / SELECT: Orang gak bisa nge-blok tulisan buat di-copy
     document.addEventListener('selectstart', function(e) {
         e.preventDefault();
     });
 
-    // 3. LOCK F12 / INSPECT: Mematikan shortcut keyboard buat buka DevTools
     document.addEventListener('keydown', function(e) {
         if (e.key === "F12" || 
             (e.ctrlKey && e.shiftKey && e.key === "I") || 
