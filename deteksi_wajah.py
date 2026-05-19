@@ -91,7 +91,7 @@ def verifikasi_akses():
 
         for wajah_live in encodings_wajah_live:
             # PENTING: Tolerance 0.45 dibuat ketat agar TEMAN TIDAK BISA TEMBUS!
-            hasil_cocok = face_recognition.compare_faces([KUNCI_WAJAH_MASTER], wajah_live, tolerance=0.55)
+            hasil_cocok = face_recognition.compare_faces([KUNCI_WAJAH_MASTER], wajah_live, tolerance=0.65)
             jarak_kemiripan = face_recognition.face_distance([KUNCI_WAJAH_MASTER], wajah_live)[0]
             
             print(f"[SCANNING LIVE] Skor Jarak Wajah: {jarak_kemiripan:.4f}")
