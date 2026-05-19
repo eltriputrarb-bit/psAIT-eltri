@@ -21,6 +21,7 @@ window.addEventListener('load', function() {
 // =======================================================================
 // 1. TARUH KONSTANTA DI PALING ATAS (Gunakan backtick ` bukan kutip tunggal ')
 // =======================================================================
+const JALUR_FLASK_LOCAL = "http://192.168.1.X:5000";
 const LINK_NGROK_SEKARANG = "http://127.0.0.1:5000";
 
 // 2. ANTI-STUCK SYSTEM (Jika 9 detik wajah kurang cahaya, otomatis tembus)
