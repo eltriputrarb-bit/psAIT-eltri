@@ -132,15 +132,6 @@
 </section>
 
 <script>
-    function toggleMenu() {
-        const menu = document.getElementById('mobile-menu');
-        const navLinks = document.getElementById('nav-links');
-        if (menu && navLinks) {
-            menu.classList.toggle('is-active');
-            navLinks.classList.toggle('active');
-        }
-    }
-
 // 1. BLOKIR KLIK KANAN (Anti View-Source lewat Klik Kanan)
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
