@@ -5,204 +5,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery - ELTRI PROJECT</title>
     <link rel="icon" type="image/png" href="logo.png">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:ital,wght=1,500;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="gallery.css">
-    <link rel="stylesheet" href="loading.css">
-    <link rel="stylesheet" href="camera.css">
-
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        body {
-            background-color: #0a0a12;
-            color: #ffffff;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        /* 1. LAYER LOADING SYSTEM */
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #05050a;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 1s ease;
-        }
-
-        #loading-screen.fade-out {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .cyber-spinner {
-            width: 80px;
-            height: 80px;
-            border: 4px solid #1a1a3a;
-            border-top: 4px solid #00a2ff;
-            border-bottom: 4px solid #00a2ff;
-            border-radius: 50%;
-            animation: spin 1.5s linear infinite;
-        }
-
-        .loading-text {
-            margin-top: 20px;
-            font-size: 1.2rem;
-            letter-spacing: 3px;
-            color: #00a2ff;
-            animation: pulse 1.5s infinite;
-        }
-
-        /* 2. LAYER GERBANG LOCK SCREEN */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #0b0f19; color: #ffffff; min-height: 100vh; }
+        
+        /* --- LOCK SCREEN VIEW --- */
         #security-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0a12;
-            z-index: 8888;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 1s ease;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #0d1117; z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease, transform 0.8s ease;
         }
-
-        #security-screen.unlocked {
-            opacity: 0;
-            pointer-events: none;
+        #security-screen.unlocked { opacity: 0; transform: scale(1.1); pointer-events: none; }
+        .card-lock {
+            background: rgba(22, 27, 34, 0.8); border: 1px solid #30363d;
+            border-radius: 12px; padding: 40px; text-align: center; max-width: 450px; width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-
-        .security-container {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 40px;
-            border-radius: 20px;
-            border: 1px solid rgba(0, 162, 255, 0.2);
-            box-shadow: 0 0 30px rgba(0, 162, 255, 0.1);
-            max-width: 500px;
-            width: 90%;
+        .radar-box {
+            width: 150px; height: 150px; border: 3px dashed #ff3333;
+            border-radius: 50%; margin: 0 auto 25px; display: flex;
+            justify-content: center; align-items: center; position: relative; overflow: hidden;
         }
+        #lock-emoji { font-size: 50px; z-index: 2; }
+        #scanner-webcam { position: absolute; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.4; }
+        .status-alert { font-size: 13px; font-weight: bold; color: #ff3333; letter-spacing: 1px; text-transform: uppercase; margin-top: 15px; }
 
-        .lock-icon-box {
-            position: relative;
-            width: 150px;
-            height: 150px;
-            margin: 0 auto 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* --- STYLE LIGHTBOX POP-UP FULL SCREEN --- */
+        .modal-lightbox {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(10, 14, 22, 0.96); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            z-index: 10000; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
         }
-
-        .radar-circle {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 2px dashed #ff9900;
-            border-radius: 50%;
-            animation: spin 10s linear infinite;
-            transition: border-color 0.5s ease;
-        }
-
-        .lock-status-text {
-            font-size: 1.1rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-            color: #ff9900;
-            margin-top: 20px;
-            text-transform: uppercase;
-            transition: color 0.5s ease;
-        }
-
-        /* Kamera Scanner Latar Belakang (Murni JS) */
-        #scanner-webcam {
-            position: absolute;
-            width: 320px;
-            height: 240px;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* 3. LAYER KONTEN UTAMA GALERI */
-        #main-portfolio {
-            opacity: 0;
-            transition: opacity 1.5s ease;
-            padding-top: 80px;
-        }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        .modal-lightbox.show { opacity: 1; pointer-events: auto; }
+        .modal-content { max-width: 85%; max-height: 85vh; border-radius: 10px; border: 2px solid #30363d; box-shadow: 0 25px 60px rgba(0,0,0,0.8); transform: scale(0.9); transition: transform 0.4s ease; }
+        .modal-lightbox.show .modal-content { transform: scale(1); }
+        .close-btn { position: absolute; top: 25px; right: 35px; color: #ffffff; font-size: 50px; font-weight: 300; cursor: pointer; user-select: none; transition: 0.3s; line-height: 1; }
+        .close-btn:hover { color: #ff3333; transform: scale(1.2); }
+        .card-img-wrapper img { cursor: pointer; }
     </style>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/tracking-min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tracking.js/1.1.3/data/face-min.js"></script>
 </head>
 <body>
 
-    <video id="scanner-webcam" preload autoplay loop muted></video>
-
-    <div id="loading-screen">
-        <div class="cyber-spinner"></div>
-        <div class="loading-text">SYSTEM SECURITY SYSTEM...</div>
-    </div>
-
     <div id="security-screen">
-        <div class="security-container">
-            <h2 style="margin-bottom: 10px; letter-spacing: 2px;">GALLERY PORTAL</h2>
-            <p style="color: #888; font-size: 0.9rem; margin-bottom: 30px;">BIOMETRIC RECOGNITION REQUIRED</p>
-
-            <div class="lock-icon-box">
-                <div id="radar" class="radar-circle"></div>
-                <span id="lock-emoji" style="font-size: 4rem;">🔒</span>
+        <div class="card-lock">
+            <h2 style="letter-spacing: 2px;">SECURE PORTAL</h2>
+            <p style="color:#8b949e; font-size:12px; margin-bottom:25px;">MASTER ELTRI BIOMETRIC VERIFICATION</p>
+            
+            <div class="radar-box" id="radar">
+                <video id="scanner-webcam" autoplay muted playsinline></video>
+                <div id="lock-emoji">🔒</div>
             </div>
 
-            <div id="lock-status" class="lock-status-text">MENGHUBUNGKAN KE SENSOR...</div>
-            <h1 id="eltri-title" style="display: none; font-size: 1.8rem; color: #33ff33; margin-top: 15px;">WELCOME, MASTER ELTRI!</h1>
+            <div id="lock-status" class="status-alert">SISTEM LIVE: MENUNGGU KAMERA...</div>
         </div>
     </div>
 
-    <div id="main-portfolio">
-        
-        <nav class="container-navbar">
-            <div class="nav-left">
-                <a href="index.html" class="logo-link">
-                    <img src="logo.png" class="logo" alt="Logo">    
-                    <span class="brand-text">ELTRI PROJECT</span>
-                </a>
-            </div>
-            <div class="nav-right">
-                <ul class="ul-navbar" id="nav-links">
-                    <li><a href="index.html" class="menu-item-btn btn-gahar"><i class="fas fa-home"></i> HOME</a></li>
-                    <li><a href="gallery.html" class="menu-item-btn active-btn btn-gahar"><i class="fas fa-images"></i> GALLERY</a></li>
-                    <li><a href="Proyek.html" class="menu-item-btn btn-public btn-gahar"><i class="fas fa-user"></i> PUBLIC PROFILE</a></li>
-                </ul>
-                <div class="menu-toggle" id="mobile-menu" onclick="toggleMenu()">
-                    <span></span><span></span><span></span>
-                </div>
-            </div>
-        </nav>
+    <div id="galleryModal" class="modal-lightbox" onclick="closeModal()">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="imgFull" alt="Preview Ukuran Penuh" onclick="event.stopPropagation()">
+    </div>
 
-        <main class="gallery-container" style="padding: 40px 20px;">
-            <header class="gallery-header" style="text-align: center; margin-bottom: 40px;">
-                <h1 style="font-size: 2.5rem; font-weight: 800;">MY <span style="color: #00a2ff;">GALLERY</span></h1>
-                <p style="color: #888; margin-top: 10px;">Koleksi documentation, proyek gahar, dan karya terbaik dari ELTRI PROJECT.</p>
-            </header>
+    <nav class="container-navbar">
+        <div class="nav-left">
+            <a href="index.html" class="logo-link">
+                <img src="logo.png" class="logo" alt="Logo"> 
+                <span class="brand-text">ELTRI PROJECT</span>
+            </a>
+        </div>
 
+        <div class="nav-right">
+            <ul class="ul-navbar" id="nav-links">
+                <li><a href="index.html" class="menu-item-btn btn-gahar"><i class="fas fa-home"></i> HOME</a></li>
+                <li class="mobile-only"><a href="gallery.html" class="menu-item-btn active-btn btn-gahar"><i class="fas fa-images"></i> GALLERY</a></li>
+                <li><a href="Proyek.html" class="menu-item-btn btn-public btn-gahar"><i class="fas fa-user"></i> PUBLIC PROFILE</a></li>
+            </ul>
+            
+            <div class="menu-toggle" id="mobile-menu" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav> 
+
+    <main class="gallery-container" id="main-portfolio" style="opacity: 0; pointer-events: none; transition: opacity 1s ease;">
+        <header class="gallery-header">
+            <h1>MY <span>GALLERY</span></h1>
+            <p>Koleksi documentation, proyek gahar, dan karya terbaik dari ELTRI PROJECT.</p>
+        </header>
+
+        <section class="gallery-grid"> 
             <div class="gallery-card">
                 <div class="card-img-wrapper">
                     <img src="mkssr.jpg" alt="Lokasi Makassar" onclick="openModal(this.src)">
@@ -212,168 +110,139 @@
                     <p>Dokumentasi jalanan kota Makassar dengan sudut pandang sinematik, 16/05,MEI,2026</p>
                 </div>
             </div>
-            
-            </section>
-        </main>
-
-    <div id="galleryModal" class="modal-lightbox" onclick="closeModal()">
-        <span class="close-btn">&times;</span>
-        <img class="modal-content" id="imgFull" alt="Preview Ukuran Penuh">
-    </div>
+        </section>
+    </main>
 
     <script>
-    function toggleMenu() {
-        const menu = document.getElementById('mobile-menu');
-        const navLinks = document.getElementById('nav-links');
-        if (menu && navLinks) {
-            menu.classList.toggle('is-active');
-            navLinks.classList.toggle('active');
-        }
-    }
+        const JALUR_FLASK_LOCAL = "http://127.0.0.1:5000";
+        let isUnlocked = false;
+        let pemindaianInterval = null;
 
-    let isUnlocked = false;
-    let pemindaianInterval = null;
-
-    function eksekusiMembukaGerbang(stream) {
-        if (isUnlocked) return;
-        isUnlocked = true;
-
-        if (pemindaianInterval) clearInterval(pemindaianInterval);
-
-        const statusText = document.getElementById('lock-status');
-        const radar = document.getElementById('radar');
-        const lockEmoji = document.getElementById('lock-emoji');
-        const eltriTitle = document.getElementById('eltri-title');
-        const securityScreen = document.getElementById('security-screen');
-        const mainPortfolio = document.getElementById('main-portfolio');
-
-        if (statusText) {
-            statusText.innerText = "ACCESS GRANTED! WELCOME MASTER 🔓";
-            statusText.style.color = "#33ff33";
-        }
-        if (radar) {
-            radar.style.borderColor = "#33ff33";
-            radar.style.borderStyle = "solid";
-        }
-        if (lockEmoji) lockEmoji.innerText = "🔓";
-        if (eltriTitle) eltriTitle.style.display = "block";
-
-        setTimeout(() => {
-            if (securityScreen) securityScreen.classList.add('unlocked');
-            if (mainPortfolio) mainPortfolio.style.opacity = "1";
-            
-            const previewWebcam = document.getElementById('webcam');
-            if (previewWebcam && stream) {
-                previewWebcam.srcObject = stream;
+        // --- SKRIP LIGHTBOX PHOTO FULL SCREEN WORKING ---
+        function openModal(imageSrc) {
+            const modal = document.getElementById("galleryModal");
+            const modalImg = document.getElementById("imgFull");
+            if (modal && modalImg) {
+                modalImg.src = imageSrc;
+                modal.classList.add("show");
+                document.body.style.overflow = "hidden"; // Kunci scroll layar utama
             }
-        }, 1200);
-    }
-
-    async function mulaiPemindaianAI() {
-        const statusText = document.getElementById('lock-status');
-        const radar = document.getElementById('radar');
-        const video = document.getElementById('scanner-webcam');
-
-        if (statusText) {
-            statusText.innerText = "SISTEM LIVE: MENGHUBUNGKAN SERVER...";
-            statusText.style.color = "#00a2ff";
         }
-        if (radar) radar.style.borderColor = "#00a2ff";
 
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ 
-                video: { width: 320, height: 240 } 
-            });
-            
-            if (video) {
-                video.srcObject = stream;
-                video.play();
+        function closeModal() {
+            const modal = document.getElementById("galleryModal");
+            if (modal) {
+                modal.classList.remove("show");
+                document.body.style.overflow = "auto"; // Aktifkan kembali scroll
             }
+        }
 
-            const canvas = document.createElement('canvas');
-            canvas.width = 320;
-            canvas.height = 240;
-            const context = canvas.getContext('2d');
+        // --- SISTEM GATEWAY UNLOCK ---
+        function eksekusiMembukaGerbang(stream) {
+            if (isUnlocked) return;
+            isUnlocked = true;
 
-            if (statusText) statusText.innerText = "SERVER LOADING SYSTEM:VERIFIKASI WAJAH...";
+            if (pemindaianInterval) clearInterval(pemindaianInterval);
 
-            pemindaianInterval = setInterval(async () => {
-                if (isUnlocked) return;
+            document.getElementById('lock-status').innerText = "ACCESS GRANTED! WELCOME MASTER 🔓";
+            document.getElementById('lock-status').style.color = "#33ff33";
+            document.getElementById('radar').style.borderColor = "#33ff33";
+            document.getElementById('lock-emoji').innerText = "🔓";
 
-                if (video && context) {
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    const base64Image = canvas.toDataURL('image/jpeg', 0.7); 
+            setTimeout(() => {
+                document.getElementById('security-screen').classList.add('unlocked');
+                document.getElementById('main-portfolio').style.opacity = "1";
+                document.getElementById('main-portfolio').style.pointerEvents = "auto";
+                if (stream) stream.getTracks().forEach(track => track.stop());
+            }, 1200);
+        }
 
-                    try {
-                        const response = await fetch('http://192.168.100.5:5000/scan-wajah', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ image: base64Image })
-                        });
+        async function mulaiPemindaianAI() {
+            const statusText = document.getElementById('lock-status');
+            const radar = document.getElementById('radar');
+            const video = document.getElementById('scanner-webcam');
 
-                        const result = await response.json();
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: 320, height: 240 } 
+                });
+                
+                if (video) {
+                    video.srcObject = stream;
+                    video.play();
+                }
 
-                        if (result.status === "UNLOCKED") {
-                            eksekusiMembukaGerbang(stream);
-                        } else {
-                            if (statusText) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 320;
+                canvas.height = 240;
+                const context = canvas.getContext('2d');
+
+                statusText.innerText = "VERIFIKASI BIOMETRIK SEDANG BERJALAN...";
+                radar.style.borderColor = "#00a2ff";
+
+                pemindaianInterval = setInterval(async () => {
+                    if (isUnlocked) return;
+
+                    if (video && context) {
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        const base64Image = canvas.toDataURL('image/jpeg', 0.6); 
+
+                        try {
+                            const response = await fetch(`${JALUR_FLASK_LOCAL}/deteksi`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ image: base64Image })
+                            });
+
+                            const result = await response.json();
+
+                            if (result.status === "UNLOCKED") {
+                                eksekusiMembukaGerbang(stream);
+                            } else {
                                 statusText.innerText = "ACCESS DENIED: WAJAH TIDAK COCOK! 🔒";
                                 statusText.style.color = "#ffaa00";
+                                radar.style.borderColor = "#ffaa00";
                             }
-                            if (radar) radar.style.borderColor = "#ffaa00";
-                        }
-                    } catch (error) {
-                        console.error("Gagal kontak ke Server Python:", error);
-                        if (statusText) {
-                            statusText.innerText = "ERROR: TUTUP SERVER PYTHON BELUM AKTIF! 🔌";
+                        } catch (error) {
+                            statusText.innerText = "ERROR: CONNECTING TO DETEKSI.PY... 🔌";
                             statusText.style.color = "#ff3333";
+                            radar.style.borderColor = "#ff3333";
                         }
-                        if (radar) radar.style.borderColor = "#ff3333";
                     }
-                }
-            }, 1500);
+                }, 1500);
 
-        } catch (err) {
-            console.error("Akses kamera ditolak browser: ", err);
-            if (statusText) {
-                statusText.innerText = "AKSES KAMERA DIBLOKIR BROWSER!";
+            } catch (err) {
+                statusText.innerText = "IZIN KAMERA DITOLAK BROWSER!";
                 statusText.style.color = "#ff3333";
+                radar.style.borderColor = "#ff3333";
             }
-            if (radar) radar.style.borderColor = "#ff3333";
-            isUnlocked = false; 
         }
-    }
 
-    window.addEventListener('load', function() {
-        const loadingScreen = document.getElementById('loading-screen');
-        setTimeout(function() {
-            if (loadingScreen) loadingScreen.classList.add('fade-out');
-            mulaiPemindaianAI(); 
-        }, 1000);
-    });
-
-    document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
-    document.addEventListener('selectstart', function(e) { e.preventDefault(); });
-    document.addEventListener('keydown', function(e) {
-        if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I") || (e.ctrlKey && e.key === "U")) {
-            e.preventDefault();
-            alert('Sistem Aman, Master Eltri! 🦾');
+        // Fungsi Navbar Mobile Toggle Menu
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const navLinks = document.getElementById('nav-links');
+            if (menu && navLinks) {
+                menu.classList.toggle('is-active');
+                navLinks.classList.toggle('active');
+            }
         }
-    });
 
-    function openModal(imageSrc) {
-        const modal = document.getElementById("galleryModal");
-        const modalImg = document.getElementById("imgFull");
-        if (modal && modalImg) {
-            modalImg.src = imageSrc;
-            modal.classList.add("show");
-        }
-    }
-    function closeModal() {
-        const modal = document.getElementById("galleryModal");
-        if (modal) modal.classList.remove("show");
-    }
-</script>
+        window.addEventListener('load', () => {
+            setTimeout(mulaiPemindaianAI, 1000);
+        });
+
+        // Blokir Fitur Inspect Element / Intip Kodingan
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('selectstart', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I") || (e.ctrlKey && e.key === "U")) {
+                e.preventDefault();
+                alert('Sistem Terenkripsi, Master Eltri! 🦾');
+            }
+        });
+    </script>
+    <script src="script.js"></script>
     <script src="anti-curi.js"></script>
 </body>
 </html>
