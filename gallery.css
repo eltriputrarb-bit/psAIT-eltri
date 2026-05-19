@@ -552,3 +552,66 @@ body {
 .close-btn:hover { color: #0088cc; }
 .modal-lightbox.show { display: flex; opacity: 1; }
 .modal-lightbox.show .modal-content { transform: scale(1); }
+
+/* --- STYLE POP-UP FULL SCREEN --- */
+.gallery-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(11, 15, 25, 0.95);
+    backdrop-filter: blur(10px); /* Efek blur latar belakang gahar */
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+/* Muncul dengan transisi halus */
+.gallery-modal.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    max-width: 85%;
+    max-height: 85vh;
+    border-radius: 8px;
+    border: 1px solid #30363d;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+    transform: scale(0.9);
+    transition: transform 0.4s ease;
+}
+
+.gallery-modal.show .modal-content {
+    transform: scale(1);
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 25px;
+    right: 35px;
+    color: #8b949e;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close-modal-btn:hover {
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+/* Pastikan kursor berubah jadi jari saat hover di foto galeri */
+.card-img-wrapper img {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.card-img-wrapper img:hover {
+    transform: scale(1.03);
+}
