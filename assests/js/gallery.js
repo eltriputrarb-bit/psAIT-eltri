@@ -37,35 +37,35 @@ document.getElementById('root').innerHTML = `
 
         <section class="gallery-grid">
             
-            <div class="gallery-card">
-                <div class="card-img-wrapper">
-                    <img src="assests/images/mkssr.jpg" alt="Lokasi Makassar" onclick="openModal(this.src)">
-                </div>
-                <div class="card-info">
-                    <h3>LOKASI: MAKASSAR</h3>
-                    <p>Lokasi: Makassar Sudut pandang sinematik jalanan kota 15/05,mei,2026</p>
-                </div>
-            </div>
+    <div class="gallery-card">
+        <div class="card-img-wrapper">
+            <img src="assests/images/mkssr.jpg" alt="Lokasi Makassar" onclick="openModal(this.src)">
+        </div>
+        <div class="card-info">
+            <h3>LOKASI: MAKASSAR</h3>
+            <p>Lokasi: Makassar Sudut pandang sinematik jalanan kota 15/05,mei,2026</p>
+        </div>
+    </div>
 
-            <div class="gallery-card">
-                <div class="card-img-wrapper">
-                    <img src="assests/images/bendara.jpg" alt="Lokasi Makassar" onclick="openModal(this.src)">
-                </div>
-                <div class="card-info">
-                    <h3>LOKASI: MAKASSAR</h3>
-                    <p>jalan bendara 20/05,mei 2026</p>
-                </div>
-            </div>
+    <div class="gallery-card">
+        <div class="card-img-wrapper">
+            <img src="assests/images/bandara.jpg" alt="Lokasi Makassar" onclick="openModal(this.src)">
+        </div>
+        <div class="card-info">
+            <h3>LOKASI: MAKASSAR</h3>
+            <p>jalan bandara 20/05,mei 2026</p>
+        </div>
+    </div>
 
-            <div class="gallery-card">
-                <div class="card-img-wrapper">
-                    <img src="assests/images/smakara.jpg" alt="SMAKARA" onclick="openModal(this.src)">
-                </div>
-                <div class="card-info">
-                    <h3>LOKASI:SMAKARA</h3>
-                    <p>SAYA FOTO PAKAI CAMERA SMAKARA 07/12,DESEMBER,2018</p>
-                </div>
-            </div>
+    <div class="gallery-card">
+        <div class="card-img-wrapper">
+            <img src="assests/images/smakara.jpg" alt="SMAKARA" onclick="openModal(this.src)">
+        </div>
+        <div class="card-info">
+            <h3>LOKASI:SMAKARA</h3>
+            <p>SAYA FOTO PAKAI CAMERA SMAKARA 07/12,DESEMBER,2018</p>
+        </div>
+    </div>
 
 </section>
 
