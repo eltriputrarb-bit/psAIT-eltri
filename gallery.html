@@ -12,7 +12,7 @@
 </head>
 <body>
 
-    <div id="galleryModal" class="modal-lightbox" onclick="closeModal()">
+    <div id="galleryModal" class="custom-modal" onclick="closeModal()">
         <span class="close-btn" onclick="closeModal(); event.stopPropagation();">&times;</span>
         <img class="modal-content" id="imgFull" alt="Preview Ukuran Penuh">
     </div>
@@ -48,7 +48,7 @@
         </header>
 
         <section class="gallery-grid">
-            
+    
             <div class="gallery-card">
                 <div class="card-img-wrapper">
                     <img src="mkssr.jpg" alt="Lokasi Makassar" onclick="openModal(this.src)">
@@ -74,40 +74,48 @@
                     <img src="smakara.jpg" alt="SMAKARA" onclick="openModal(this.src)">
                 </div>
                 <div class="card-info">
-                    <h3>LOKASI:SMAKARA</h3>
+                    <h3>LOKASI: SMAKARA</h3>
                     <p>SAYA FOTO PAKAI CAMERA SMAKARA 07/12,DESEMBER,2018</p>
                 </div>
             </div>
 
-</section>
-
+        </section>
     </main>
 
     <script>
-        // 1. ANTI KLIK KANAN: Mengunci menu klik kanan browser
-        document.addEventListener('contextmenu', function(e) {
+    function openModal(imageSrc) {
+        var modal = document.getElementById("galleryModal");
+        var modalImg = document.getElementById("imgFull");
+        
+        modal.style.display = "flex"; // Memunculkan modal ke tengah layar
+        modalImg.src = imageSrc;      // Mengisi modal dengan gambar yang di-klik
+    }
+
+    function closeModal() {
+        var modal = document.getElementById("galleryModal");
+        modal.style.display = "none";  // Menyembunyikan modal kembali
+    }
+
+    // SECURITY SYSTEM (Proteksi Kode Tetap Aman Tanpa Rusak Fungsi Klik)
+    document.addEventListener('contextmenu', function(e) {
+        // Izinkan klik kanan jika yang di-klik adalah gambar gallery biar gak bentrok
+        if (e.target.tagName !== 'IMG') {
             e.preventDefault();
             alert('Sistem keamanan Anti-Error! Dilarang mencuri kodingan ELTRI PROJECT!');
-        });
+        }
+    });
 
-        // 2. ANTI BLOCK TEKS: Orang gak bisa seret/blokir teks sembarangan
-        document.addEventListener('selectstart', function(e) {
+    document.addEventListener('keydown', function(e) {
+        if (e.key === "F12" || 
+            (e.ctrlKey && e.shiftKey && e.key === "I") || 
+            (e.ctrlKey && e.shiftKey && e.key === "C") || 
+            (e.ctrlKey && e.key === "U")) {
             e.preventDefault();
-        });
-
-        // 3. ANTI INSPECT ELEMENT: Mengunci F12, Ctrl+Shift+I, Ctrl+Shift+C, dan Ctrl+U
-        document.addEventListener('keydown', function(e) {
-            if (e.key === "F12" || 
-                (e.ctrlKey && e.shiftKey && e.key === "I") || 
-                (e.ctrlKey && e.shiftKey && e.key === "C") || 
-                (e.ctrlKey && e.key === "U")) {
-                e.preventDefault();
-                alert('Fitur Inspect Element Dikunci, Bang! 🦾🛡️');
-            }
-        });
+            alert('Fitur Inspect Element Dikunci, Bang! 🦾🛡️');
+        }
+    });
     </script>
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
-
 </html>
