@@ -49,7 +49,7 @@ document.getElementById('root').innerHTML = `
 
     <div class="gallery-card">
         <div class="card-img-wrapper">
-            <img src="assests/images/bandara.jpg" alt="Lokasi Makassar" onclick="openModal(this.src)">
+            <img src="assests/images/foto2.jpg" alt="Lokasi Makassar" onclick="openModal(this.src)">
         </div>
         <div class="card-info">
             <h3>LOKASI: MAKASSAR</h3>
