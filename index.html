@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELTRI PROJECT</title>
+    <meta name="theme-color" content="#000000">
+    <link rel="icon" type="image/png" href="assests/images/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assests/style.min.css">
+    <link rel="stylesheet" href="assests/Gallery.min.css">
+</head>
+<body>
+
+    <div class="sembunyi-total">
+    <p>Teks ini tidak akan kelihatan sama sekali di browser.</p>
+</div>
+
+<button class="sembunyi-invisible">Tombol Gaib</button>
+
+    <div id="root"></div>
+
+    <script src="assests/js/index.obfuscated.js"></script>
+    <script src="assests/js/script.obfuscated.js"></script>
+    
+
+<script>
+    // 1. ANTI KLIK KANAN: Orang gak bisa klik kanan di web Abang
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        alert('Sistem keamanan Anti error Dilarang mencuri kodingan ELTRI PROJECT!');
+    });
+
+    document.addEventListener('selectstart', function(e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === "F12" || 
+            (e.ctrlKey && e.shiftKey && e.key === "I") || 
+            (e.ctrlKey && e.shiftKey && e.key === "C") || 
+            (e.ctrlKey && e.key === "U")) {
+            e.preventDefault();
+            alert('Fitur Inspect Element Dikunci, Bang! 🦾');
+        }
+    });
+</script>
+
+</body>
+</html>
