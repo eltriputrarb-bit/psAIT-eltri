@@ -15,29 +15,30 @@
     <div id="root"></div>
 
     <script src="assests/js/Gallery.obfuscated.js"></script>
-    <script src="assests/js/script.obfuscated.js"></script>
 
-<script>
-    // 1. ANTI KLIK KANAN: Orang gak bisa klik kanan di web Abang
-    document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        alert('Sistem keamanan Anti error Dilarang mencuri kodingan ELTRI PROJECT!');
-    });
-
-    document.addEventListener('selectstart', function(e) {
-        e.preventDefault();
-    });
-
-    document.addEventListener('keydown', function(e) {
-        if (e.key === "F12" || 
-            (e.ctrlKey && e.shiftKey && e.key === "I") || 
-            (e.ctrlKey && e.shiftKey && e.key === "C") || 
-            (e.ctrlKey && e.key === "U")) {
+    <script>
+        // 1. ANTI KLIK KANAN: Mengunci menu klik kanan browser
+        document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
-            alert('Fitur Inspect Element Dikunci, Bang! 🦾');
-        }
-    });
-</script>
+            alert('Sistem keamanan Anti-Error! Dilarang mencuri kodingan ELTRI PROJECT!');
+        });
+
+        // 2. ANTI BLOCK TEKS: Orang gak bisa seret/blokir teks sembarangan
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+        });
+
+        // 3. ANTI INSPECT ELEMENT: Mengunci F12, Ctrl+Shift+I, Ctrl+Shift+C, dan Ctrl+U
+        document.addEventListener('keydown', function(e) {
+            if (e.key === "F12" || 
+                (e.ctrlKey && e.shiftKey && e.key === "I") || 
+                (e.ctrlKey && e.shiftKey && e.key === "C") || 
+                (e.ctrlKey && e.key === "U")) {
+                e.preventDefault();
+                alert('Fitur Inspect Element Dikunci, Bang! 🦾🛡️');
+            }
+        });
+    </script>
 
 </body>
 </html>
