@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - ELTRI PROJECT</title>
+    <link rel="icon" type="image/png" href="assests/images/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="assests/style.css">
+    <link rel="stylesheet" href="assests/Gallery.css">
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script src="assests/js/gallery.js"></script>
+
+    <script>
+        // 1. ANTI KLIK KANAN: Mengunci menu klik kanan browser
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            alert('Sistem keamanan Anti-Error! Dilarang mencuri kodingan ELTRI PROJECT!');
+        });
+
+        // 2. ANTI BLOCK TEKS: Orang gak bisa seret/blokir teks sembarangan
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+        });
+
+        // 3. ANTI INSPECT ELEMENT: Mengunci F12, Ctrl+Shift+I, Ctrl+Shift+C, dan Ctrl+U
+        document.addEventListener('keydown', function(e) {
+            if (e.key === "F12" || 
+                (e.ctrlKey && e.shiftKey && e.key === "I") || 
+                (e.ctrlKey && e.shiftKey && e.key === "C") || 
+                (e.ctrlKey && e.key === "U")) {
+                e.preventDefault();
+                alert('Fitur Inspect Element Dikunci, Bang! 🦾🛡️');
+            }
+        });
+    </script>
+
+</body>
+</html>
